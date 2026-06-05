@@ -1,81 +1,153 @@
-# 🛠️ Meshs One API SDK
+# meshs-one · Node.js SDK
 
-> **One API key. All top AI models.** OpenAI-compatible. No geo-blocking. No rate limits.
+> **One API key. 30+ AI models. Zero dependencies.**
 
+[![npm version](https://img.shields.io/npm/v/meshs-one.svg)](https://www.npmjs.com/package/meshs-one)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Why Meshs One?
+## Why
 
-- 🎯 **30+ models, one API key** — GPT-5, Claude 4, Gemini 2.5, DeepSeek R2, Qwen 3
-- 💰 **80% cheaper** than official API pricing
-- ⚡ **< 200ms latency** via global edge nodes (Singapore, Tokyo, US, EU)
-- 🔄 **OpenAI SDK compatible** — swap `base_url`, zero code changes
-- 🛡️ **99.9% uptime** with automatic model fallback
+- 🎯 **30+ models, one key** — GPT-5, Claude 4, Gemini 2.5, DeepSeek R2, Qwen 3
+- 💰 **Up to 80% cheaper** than official pricing
+- 🔄 **OpenAI SDK compatible** — swap `base_url`, zero migration
+- 🛡️ **Built-in retry** — auto-retries on network errors
+- 🧵 **Streaming** — async generator for real-time responses
+- 📦 **Zero dependencies** — pure Node.js, no npm bloat
+
+## Install
+
+```bash
+npm install meshs-one
+```
 
 ## Quick Start
 
-```bash
-npm install meshs-one-api
+```js
+const MeshsOne = require('meshs-one');
+
+const client = new MeshsOne({ apiKey: 'your-api-key' });
+
+// Simple chat
+const reply = await client.chat('Explain quantum computing in one sentence.');
+console.log(reply);
+
+// With system prompt + model selection
+const reply2 = await client.chat([
+  { role: 'system', content: 'You are a Python expert.' },
+  { role: 'user', content: 'Write a FastAPI endpoint for file upload.' }
+], { model: 'claude-4-sonnet' });
+
+console.log(reply2);
 ```
 
-```javascript
-import { MeshsOne } from 'meshs-one-api';
+## API Reference
 
-const client = new MeshsOne({
-  apiKey: 'your-api-key'
-});
+### `new MeshsOne(options)`
 
-// Use GPT-5
-const gptResponse = await client.chat.completions.create({
-  model: 'gpt-5',
-  messages: [{ role: 'user', content: 'Explain quantum computing in 3 sentences.' }]
-});
+| Option | Type | Default | Description |
+|:---|:---|:---|:---|
+| `apiKey` | string | **required** | Your API key from api.meshs.one |
+| `timeout` | number | 60000 | Request timeout (ms) |
+| `maxRetries` | number | 3 | Auto-retry count |
 
-// Switch to Claude — same syntax
-const claudeResponse = await client.chat.completions.create({
+### `client.chat(messages, options?)`
+
+Send a chat completion. Returns the response text (string).
+
+```js
+// String shorthand
+await client.chat('Hello!');
+
+// Full message array
+await client.chat([
+  { role: 'user', content: 'Hello!' }
+]);
+
+// With options
+await client.chat('Hello!', {
   model: 'claude-4-opus',
-  messages: [{ role: 'user', content: 'Write a poem about APIs.' }]
+  temperature: 0.7,
+  maxTokens: 2000
 });
+
+// Streaming
+const stream = await client.chat('Tell me a story', { stream: true });
+for await (const chunk of stream) {
+  process.stdout.write(chunk);
+}
+```
+
+### `client.listModels()`
+
+```js
+const models = await client.listModels();
+// [{ id: 'gpt-5', owned_by: 'openai' }, ...]
+```
+
+### `client.ping()`
+
+```js
+const ok = await client.ping(); // true | false
+```
+
+### `client.getKnownModels()`
+
+```js
+const models = client.getKnownModels();
+// ['claude-4-opus', 'claude-4-sonnet', 'gpt-5', 'gpt-4o', ...]
+```
+
+## Error Handling
+
+```js
+const { MeshsError, MeshsAuthError, MeshsRateLimitError } = MeshsOne;
+
+try {
+  await client.chat('Hello');
+} catch (err) {
+  if (err instanceof MeshsAuthError) {
+    console.error('Invalid API key');
+  } else if (err instanceof MeshsRateLimitError) {
+    console.error('Too many requests, slow down');
+  } else if (err instanceof MeshsError) {
+    console.error(`Meshs error: ${err.message} (HTTP ${err.status})`);
+  }
+}
 ```
 
 ## OpenAI SDK Compatibility
 
-Already using the OpenAI SDK? Just change the `baseURL`:
+Already using `openai` npm package? Just change baseURL:
 
-```javascript
+```js
 import OpenAI from 'openai';
 
 const client = new OpenAI({
   baseURL: 'https://api.meshs.one/v1',
   apiKey: 'your-api-key'
 });
-
 // All your existing code works!
 ```
 
-## Supported Models
+## Models
 
-| Model | Category | Input / 1M tokens | Output / 1M tokens |
-|:---|:---|:---|:---|
-| GPT-5 | OpenAI | $2.50 | $10.00 |
-| Claude 4 Opus | Anthropic | $3.00 | $15.00 |
-| Claude 4 Sonnet | Anthropic | $1.50 | $7.50 |
-| Gemini 2.5 Pro | Google | $1.25 | $5.00 |
-| DeepSeek R2 | DeepSeek | $0.27 | $1.10 |
-| Qwen 3 72B | Alibaba | $0.15 | $0.60 |
+| Model | Provider | Best for |
+|:---|:---|:---|
+| `gpt-5` | OpenAI | General purpose, math |
+| `gpt-4o` | OpenAI | Balanced cost/quality |
+| `claude-4-opus` | Anthropic | Long-form writing |
+| `claude-4-sonnet` | Anthropic | Code generation |
+| `gemini-2.5-pro` | Google | Translation, vision |
+| `gemini-2.5-flash` | Google | Fast, cheap |
+| `deepseek-r2` | DeepSeek | Math, reasoning |
+| `deepseek-v3` | DeepSeek | Budget batch |
+| `qwen-3` | Alibaba | Budget batch |
+| `qwen-3-turbo` | Alibaba | Fast, cheapest |
 
-*Prices via api.meshs.one gateway. Official prices are typically 3-5x higher.*
+## License
 
-## Documentation
-
-- 📖 Full API Reference: [docs.meshs.one](https://docs.meshs.one) (coming soon)
-- 📝 Blog: [blog.meshs.one](https://blog.meshs.one)
-- 🐦 Updates: [@Meshs_One](https://x.com/Meshs_One)
-
-## Get Your API Key
-
-👉 Sign up at [api.meshs.one](https://api.meshs.one) — **$5 free credit**, no credit card required.
+MIT © [Meshs One](https://meshs.one)
 
 ---
 
-Made with ❤️ by [Meshs One](https://meshs.one) | Hong Kong 🇭🇰
+[Get API Key](https://api.meshs.one/?ref=github) · [Blog](https://blog.meshs.one) · [X](https://x.com/Meshs_One)

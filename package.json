@@ -1,0 +1,35 @@
+{
+  "name": "meshs-one",
+  "version": "1.0.0",
+  "description": "Official Node.js SDK for Meshs One AI API Gateway — one API key, 30+ models",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "files": [
+    "src/"
+  ],
+  "scripts": {
+    "test": "node test/basic.js"
+  },
+  "keywords": [
+    "ai",
+    "api",
+    "openai",
+    "claude",
+    "gemini",
+    "deepseek",
+    "llm",
+    "chatgpt",
+    "meshs",
+    "api-gateway"
+  ],
+  "author": "Meshs One Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Meshs-One/meshs-api-sdk.git"
+  },
+  "homepage": "https://api.meshs.one",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
