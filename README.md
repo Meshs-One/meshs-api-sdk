@@ -144,6 +144,14 @@ const client = new OpenAI({
 | `qwen-3` | Alibaba | Budget batch |
 | `qwen-3-turbo` | Alibaba | Fast, cheapest |
 
+## 📚 Tutorials
+
+| Date | Tutorial | Blog | Code |
+|:---|:---|:---|:---|
+| 2026-06-24 | AI API Gateway Quickstart: One Key, 30+ Models in 5 Minutes | [blog.meshs.one](https://blog.meshs.one/posts/ai-api-gateway-quickstart-5-minutes/) | [examples/quickstart.js](examples/quickstart.js) · [smart-router.js](examples/smart-router.js) |
+
+More tutorials coming soon. Have a use case to share? [Open an issue](https://github.com/Meshs-One/meshs-api-sdk/issues).
+
 ## License
 
 MIT © [Meshs One](https://meshs.one)
