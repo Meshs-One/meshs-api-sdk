@@ -2,7 +2,7 @@
  * Meshs One Quickstart — 5-minute setup
  * 
  * Prerequisites:
- *   1. Sign up at https://api.meshs.one → get your API key
+ *   1. Sign up at https://api.meshs.one/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=examples → get your API key
  *   2. npm install openai
  * 
  * Source: blog.meshs.one/posts/ai-api-gateway-quickstart-5-minutes/

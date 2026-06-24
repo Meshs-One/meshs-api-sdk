@@ -158,4 +158,4 @@ MIT © [Meshs One](https://meshs.one)
 
 ---
 
-[Get API Key](https://api.meshs.one/?ref=github) · [Blog](https://blog.meshs.one) · [X](https://x.com/Meshs_One)
+[Get API Key](https://api.meshs.one/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=badge) · [Blog](https://blog.meshs.one) · [X](https://x.com/Meshs_One)
